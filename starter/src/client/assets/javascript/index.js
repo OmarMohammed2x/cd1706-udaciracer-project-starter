@@ -1,7 +1,7 @@
 // PROVIDED CODE BELOW (LINES 1 - 80) DO NOT REMOVE
 
 // The store will hold all information needed globally
-let store = {
+const store = {
   track_id: undefined,
   track_name: undefined,
   player_id: undefined,
@@ -86,27 +86,31 @@ async function delay(ms) {
 
 // This async function controls the flow of the race, add the logic and error handling
 async function handleCreateRace() {
-  console.log("in create race");
+  try {
+    console.log("in create race");
 
-  // render starting UI
-  renderAt("#race", renderRaceStartView(store.track_name));
-  // TODO - Get player_id and track_id from the store
-  const player_id = store.player_id;
-  const track_id = store.track_id;
-  // const race = TODO - call the asynchronous method createRace, passing the correct parameters
-  const race = await createRace(player_id, track_id);
-  // TODO - update the store with the race id in the response
-  store.race_id = race.ID;
-  // TIP - console logging API responses can be really helpful to know what data shape you received
-  // The race has been created, now start the countdown
-  // TODO - call the async function runCountdown
-  await runCountdown();
-  // TODO - call the async function startRace
-  await startRace(race.ID);
-  // TIP - remember to always check if a function takes parameters before calling it!
+    // render starting UI
+    renderAt("#race", renderRaceStartView(store.track_name));
+    // TODO - Get player_id and track_id from the store
+    const player_id = store.player_id;
+    const track_id = store.track_id;
+    // const race = TODO - call the asynchronous method createRace, passing the correct parameters
+    const race = await createRace(player_id, track_id);
+    // TODO - update the store with the race id in the response
+    store.race_id = race.ID;
+    // TIP - console logging API responses can be really helpful to know what data shape you received
+    // The race has been created, now start the countdown
+    // TODO - call the async function runCountdown
+    await runCountdown();
+    // TODO - call the async function startRace
+    await startRace(race.ID);
+    // TIP - remember to always check if a function takes parameters before calling it!
 
-  // TODO - call the async function runRace
-  await runRace(race.ID);
+    // TODO - call the async function runRace
+    await runRace(race.ID);
+  } catch (error) {
+    console.log("problem with handleCreateRace request:", error);
+  }
 }
 
 function runRace(raceID) {
@@ -299,7 +303,7 @@ function resultsView(positions) {
 }
 
 function raceProgress(positions) {
-  let userPlayer = positions.find((e) => e.id === parseInt(store.player_id));
+  const userPlayer = positions.find((e) => e.id === parseInt(store.player_id));
   userPlayer.driver_name += " (you)";
 
   positions = positions.sort((a, b) => (a.segment > b.segment ? -1 : 1));
