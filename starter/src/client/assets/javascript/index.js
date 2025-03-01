@@ -28,7 +28,7 @@ async function onPageLoad() {
       renderAt("#racers", html);
     });
   } catch (error) {
-    console.log("Problem getting tracks and racers ::", error.message);
+    console.log("Problem getting tracks and racers :", error.message);
     console.error(error);
   }
 }
@@ -102,7 +102,6 @@ async function handleCreateRace() {
   // TODO - call the async function runCountdown
   await runCountdown();
   // TODO - call the async function startRace
-  console.log(race.ID);
   await startRace(race.ID);
   // TIP - remember to always check if a function takes parameters before calling it!
 
@@ -128,29 +127,24 @@ function runRace(raceID) {
     const raceInterval = setInterval(() => {
       getRace(raceID)
         .then((res) => {
-          console.log(res);
-          return res;
-        })
-        .then((res) => {
           if (res.status === "in-progress") {
             renderAt("#leaderBoard", raceProgress(res.positions));
           } else if (res.status === "finished") {
-            console.log('race finished')
+            console.log("race finished");
             clearInterval(raceInterval);
             renderAt("#race", resultsView(res.positions));
             resolve(res);
           }
         })
-        .catch((error) => console.log("Problem with getRace request::", error));
+        .catch((error) => console.log("Problem with getRace request:", error));
     }, 500);
-  }).catch((error) => console.log("Problem with runRace request::", error));
+  }).catch((error) => console.log("Problem with runRace request:", error));
   // remember to add error handling for the Promise
 }
 
 async function runCountdown() {
   try {
     // wait for the DOM to load
-    delay()
     let timer = 3;
 
     return new Promise((resolve) => {
@@ -199,9 +193,7 @@ function handleSelectTrack(target) {
 }
 
 function handleAccelerate() {
-  console.log("accelerate button clicked");
   // TODO - Invoke the API call to accelerate
-  console.log(store.race_id);
   accelerate(store.race_id);
 }
 
@@ -263,7 +255,7 @@ function renderCountdown(count) {
 function renderRaceStartView(track) {
   return `
 		<header>
-			<h1>Race: ${track.name}</h1>
+			<h1>Race: ${track}</h1>
 		</header>
 		<main id="two-columns">
 			<section id="leaderBoard">
@@ -279,9 +271,8 @@ function renderRaceStartView(track) {
 		<footer></footer>
 	`;
 }
-
 function resultsView(positions) {
-  userPlayer.driver_name += " (you)";
+  store.player_id += " (you)";
   let count = 1;
 
   const results = positions.map((p) => {
@@ -356,21 +347,21 @@ function defaultFetchOpts() {
 // TODO - Make a fetch call (with error handling!) to each of the following API endpoints
 
 function getTracks() {
-  console.log(`calling server :: ${SERVER}/api/tracks`);
+  console.log(`calling server : ${SERVER}/api/tracks`);
   // GET request to `${SERVER}/api/tracks`
   return fetch(`${SERVER}/api/tracks`)
     .then((data) => data.json())
-    .catch((err) => console.log("Problem with getTracks request::", err));
+    .catch((err) => console.log("Problem with getTracks request:", err));
   // TODO: Fetch tracks
   // TIP: Don't forget a catch statement!
 }
 
 function getRacers() {
   // GET request to `${SERVER}/api/cars`
-  console.log(`calling server :: ${SERVER}/api/cars`);
+  console.log(`calling server : ${SERVER}/api/cars`);
   return fetch(`${SERVER}/api/cars`)
     .then((data) => data.json())
-    .catch((err) => console.log("Problem with getRacers request::", err));
+    .catch((err) => console.log("Problem with getRacers request:", err));
   // TODO: Fetch racers
   // TIP: Do a file search for "TODO" to make sure you find all the things you need to do! There are even some vscode plugins that will highlight todos for you
 }
@@ -387,7 +378,7 @@ function createRace(player_id, track_id) {
     body: JSON.stringify(body),
   })
     .then((res) => res.json())
-    .catch((err) => console.log("Problem with createRace request::", err));
+    .catch((err) => console.log("Problem with createRace request:", err));
 }
 
 function getRace(id) {
